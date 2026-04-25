@@ -6,7 +6,7 @@ import numpy as np
 import cv2
 import gdown
 import tensorflow as tf
-from tensorflow.keras.models import load_model
+from keras.models import load_model
 
 # Google Drive direct file ID link
 FILE_ID = "1CuLOlei4T2zUjwyKGCbi02Z6H5IglIEi"
