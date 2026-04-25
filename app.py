@@ -3,7 +3,7 @@ import streamlit as st
 import numpy as np
 import cv2
 import gdown
-import tf_keras as keras  # ← use tf_keras instead of tensorflow.keras
+import keras
 
 FILE_ID = "1NN4mDv3aM-ttrQEZsfzxpQxeBzpg5DRA"
 MODEL_PATH = "model.keras"
@@ -25,7 +25,7 @@ IMG_SIZE = 224
 
 st.set_page_config(page_title="Anemia Detection App", page_icon="🩺")
 st.title("🩺 Anemia Detection App")
-st.write("Upload an image to predict Hb level and anemia status.")
+st.write("Upload an image to predict anemia status.")
 
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "png", "jpeg"])
 
@@ -47,21 +47,11 @@ if uploaded_file is not None:
     with st.spinner("Analyzing image..."):
         output = model.predict(img_input)
 
-    if isinstance(output, list) and len(output) == 2:
-        pred_class, pred_hb = output
-    else:
-        st.error(f"❌ Unexpected model output: type={type(output)}")
-        st.stop()
-
-    hb_value = pred_hb[0][0]
-    anemia_prob = pred_class[0][0]
+    # Single output model — one sigmoid value
+    anemia_prob = float(output[0][0])
 
     st.subheader("📊 Results")
-    col1, col2 = st.columns(2)
-    with col1:
-        st.metric("Hb Level (g/dL)", f"{hb_value:.2f}")
-    with col2:
-        st.metric("Anemia Probability", f"{anemia_prob:.2%}")
+    st.metric("Anemia Probability", f"{anemia_prob:.2%}")
 
     st.divider()
     if anemia_prob > 0.5:
