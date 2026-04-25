@@ -2,4 +2,4 @@ streamlit
 numpy
 opencv-python-headless
 gdown
-tensorflow==2.15.0
+tensorflow==2.15.1
