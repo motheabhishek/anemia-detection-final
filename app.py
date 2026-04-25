@@ -10,7 +10,7 @@ FILE_ID = "1CuLOlei4T2zUjwyKGCbi02Z6H5IglIEi"
 MODEL_PATH = "model.h5"
 
 # Download model (only once)
-   if not os.path.exists(MODEL_PATH):
+ if not os.path.exists(MODEL_PATH):
     url = f"https://drive.google.com/uc?id={FILE_ID}"
     gdown.download(
         url,
