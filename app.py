@@ -1,8 +1,11 @@
+import os
+os.environ["TF_USE_LEGACY_KERAS"] = "1"  # MUST be before any keras/tf import
+
 import streamlit as st
 import numpy as np
 import cv2
-import os
 import gdown
+import tensorflow as tf
 from tensorflow.keras.models import load_model
 
 # Google Drive direct file ID link
@@ -14,14 +17,17 @@ if not os.path.exists(MODEL_PATH):
     url = f"https://drive.google.com/uc?export=download&id={FILE_ID}"
     gdown.download(url, MODEL_PATH, quiet=False)
 
-# Load model with caching to avoid reloading on every interaction
+# Load model with caching
 @st.cache_resource
 def load_anemia_model():
-    return load_model(MODEL_PATH, compile=False, safe_mode=False)
+    try:
+        return load_model(MODEL_PATH, compile=False)
+    except Exception as e:
+        st.error(f"❌ Model loading failed: {e}")
+        st.stop()
 
 model = load_anemia_model()
 
-# Image size
 IMG_SIZE = 224
 
 # Page config
@@ -46,7 +52,7 @@ if uploaded_file is not None:
     img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
     st.image(img_rgb, caption="Uploaded Image", use_container_width=True)
 
-    # Preprocess for model (separate from display image)
+    # Preprocess for model
     img_input = cv2.resize(img_bgr, (IMG_SIZE, IMG_SIZE))
     img_input = img_input / 255.0
     img_input = np.expand_dims(img_input, axis=0)  # Shape: (1, 224, 224, 3)
@@ -59,7 +65,7 @@ if uploaded_file is not None:
     if isinstance(output, list) and len(output) == 2:
         pred_class, pred_hb = output
     else:
-        st.error(f"❌ Unexpected model output format: {type(output)}, length: {len(output) if isinstance(output, list) else 'N/A'}")
+        st.error(f"❌ Unexpected model output: type={type(output)}, len={len(output) if isinstance(output, list) else 'N/A'}")
         st.stop()
 
     hb_value = pred_hb[0][0]
@@ -68,10 +74,8 @@ if uploaded_file is not None:
     # Display results
     st.subheader("📊 Results")
     col1, col2 = st.columns(2)
-
     with col1:
         st.metric(label="Hb Level (g/dL)", value=f"{hb_value:.2f}")
-
     with col2:
         st.metric(label="Anemia Probability", value=f"{anemia_prob:.2%}")
 
@@ -82,4 +86,4 @@ if uploaded_file is not None:
     else:
         st.success("✅ Result: **Normal** — No signs of anemia detected.")
 
-st.warning("⚠️ This app is for educational purposes only and is NOT a substitute for medical diagnosis. Always consult a qualified doctor.")
+st.warning("⚠️ This app is for educational purposes only. Always consult a qualified doctor.")
