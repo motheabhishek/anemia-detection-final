@@ -1,24 +1,37 @@
 import streamlit as st
 import numpy as np
 import cv2
-from tensorflow.keras.models import load_model
+import os
 import gdown
+from tensorflow.keras.models import load_model
 
-# Download model from Google Drive
-url = "https://drive.google.com/uc?export=download&id=1CuLOlei4T2zUjwyKGCbi02Z6H5IglIEi"
-gdown.download(url, "model.h5", quiet=False)
+# Google Drive direct file ID link
+FILE_ID = "1CuLOlei4T2zUjwyKGCbi02Z6H5IglIEi"
+MODEL_PATH = "model.h5"
 
+# Download model (only once)
+   if not os.path.exists(MODEL_PATH):
+    url = f"https://drive.google.com/uc?id={FILE_ID}"
+    gdown.download(
+        url,
+        MODEL_PATH,
+        quiet=False,
+        fuzzy=True
+    )
 # Load model
-model = load_model("model.h5", compile=False)
+model = load_model(MODEL_PATH, compile=False)
 
+# Image size
 IMG_SIZE = 224
 
-st.title("💅 Anemia Detection App")
+# UI
+st.title("🩺 Anemia Detection App")
 st.write("Upload an image to predict Hb level and anemia")
 
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "png", "jpeg"])
 
 if uploaded_file is not None:
+    # Read image
     file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
     img = cv2.imdecode(file_bytes, 1)
 
