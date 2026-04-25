@@ -12,11 +12,11 @@ MODEL_PATH = "model.h5"
 # Download model (only once)
 if not os.path.exists(MODEL_PATH):
     url = f"https://drive.google.com/uc?export=download&id={FILE_ID}"
-gdown.download(
-    url,
-    MODEL_PATH,
-    quiet=False
-)
+    gdown.download(
+        url,
+        MODEL_PATH,
+        quiet=False
+    )
 # Load model
 model = load_model(MODEL_PATH, compile=False)
 # Image size
