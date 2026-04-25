@@ -47,7 +47,6 @@ if uploaded_file is not None:
     with st.spinner("Analyzing image..."):
         output = model.predict(img_input)
 
-    # Single output model — one sigmoid value
     anemia_prob = float(output[0][0])
 
     st.subheader("📊 Results")
