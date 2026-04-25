@@ -2,5 +2,4 @@ streamlit
 numpy
 opencv-python-headless
 gdown
-tensorflow==2.16.1
-tf-keras
+keras
