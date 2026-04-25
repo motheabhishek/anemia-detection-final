@@ -5,7 +5,7 @@ from tensorflow.keras.models import load_model
 import gdown
 
 # Download model from Google Drive
-url = "https://drive.google.com/uc?id=1CuLOlei4T2zUjwyKGCbi02Z6H5IglIEi"
+url = "https://drive.google.com/uc?export=download&id=1CuLOlei4T2zUjwyKGCbi02Z6H5IglIEi"
 gdown.download(url, "model.h5", quiet=False)
 
 # Load model
