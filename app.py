@@ -3,7 +3,7 @@ import streamlit as st
 import numpy as np
 import cv2
 import gdown
-import tensorflow as tf
+import tf_keras as keras  # ← use tf_keras instead of tensorflow.keras
 
 FILE_ID = "1NN4mDv3aM-ttrQEZsfzxpQxeBzpg5DRA"
 MODEL_PATH = "model.keras"
@@ -15,7 +15,7 @@ if not os.path.exists(MODEL_PATH):
 @st.cache_resource
 def load_anemia_model():
     try:
-        return tf.keras.models.load_model(MODEL_PATH, compile=False)
+        return keras.models.load_model(MODEL_PATH, compile=False)
     except Exception as e:
         st.error(f"❌ Model loading failed: {e}")
         st.stop()
